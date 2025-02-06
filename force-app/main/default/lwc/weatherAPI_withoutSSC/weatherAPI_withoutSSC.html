@@ -1,0 +1,24 @@
+<template>
+    <lightning-card title="Longitude And Latitude">
+        <div class="slds-m-around_medium">
+            <lightning-input label="Enter City Name" class="city-input"></lightning-input>
+            <lightning-button label="Get Weather" onclick={getLocation}></lightning-button>
+        </div>
+
+        <template if:true={GeoLocationData}>
+            <div class="slds-box slds-theme_default">
+                <div class="slds-text-heading_large">Longitude: {GeoLocationData.longitude}</div>
+                <div class="slds-text-heading_large">Latitude: {GeoLocationData.latitude}</div>
+            </div>
+        </template>
+        <template if:true={weatherData}>
+            <div class="slds-box slds-theme_default slds-m-top_medium">
+                <div class="slds-text-heading_medium">Tomorrow Forecast:</div>
+                <div>Temperature: {weatherData.current.temp_c}°C</div>
+                <div>Condition: {weatherData.current.condition.text}</div>
+                <div>Wind Speed: {weatherData.current.wind_kph} km/h</div>
+                <div>Humidity: {weatherData.current.humidity}%</div>
+                <div>Cloud Cover: {weatherData.current.cloud}%</div>
+            </div></template>
+    </lightning-card>
+</template>
