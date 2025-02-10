@@ -1,0 +1,41 @@
+<template>
+    <lightning-card class ="weather-container" title="Weather Forecast">
+        <div class="slds-m-around_medium">
+            <!-- Button to Fetch Weather -->
+            <lightning-button 
+                label="Get Weather Forecast" 
+                variant="brand" 
+                onclick={fetchWeather} 
+                class="slds-m-top_medium">
+            </lightning-button>
+            <lightning-button
+                label="Clear" 
+                variant="Destructive" 
+                onclick={clearWeather} 
+                class="slds-m-top_medium slds-m-left_medium"></lightning-button>
+            <!-- Show Loading Indicator if Data is Loading -->
+            <template if:true={isLoading}>
+                <lightning-spinner size="large" alternative-text="Loading..."></lightning-spinner>
+            </template>
+
+            
+            <!-- Using lightning-record-view-form to Display Weather Information -->
+            <template if:true={weatherData}>
+                <lightning-record-view-form 
+                    object-api-name="Weather__c"
+                    record-id={weatherData.CityName}>
+                    <div class="slds-m-top_medium">
+                        <p><strong>City:</strong> {cityName}</p> 
+                        <p><strong>Temperature:</strong> {weatherData.temperature}°C</p>
+                        <p><strong>Pressure:</strong> {weatherData.pressure} mb</p>
+                        <p><strong>Humidity:</strong> {weatherData.humidity}%</p>
+                        <p><strong>Condition:</strong> {weatherData.condition}</p>
+                        <p><strong>Feels Like:</strong> {weatherData.feelsLike}°C</p>
+                        <p><strong>Min Temperature:</strong> {weatherData.tempMin}°C</p>
+                        <p><strong>Max Temperature:</strong> {weatherData.tempMax}°C</p>
+                    </div>
+                </lightning-record-view-form>
+            </template>
+        </div>
+    </lightning-card>
+</template>

@@ -1,24 +1,45 @@
-import { LightningElement, track } from 'lwc';
+import { LightningElement, track, api, wire } from 'lwc';
+import {getRecord} from 'lightning/uiRecordApi';
 
 export default class WeatherAPI_withoutSSC extends LightningElement {
     @track GeoLocationData = null;
-    @track weatherData = null;
+    @track weatherData = null;  
+    @track city = '';
+    @api recordId;
+    @api objectApiName;
 
     apiKey = 'd30229392c36dda4141c8daaccba5dc1'; // OpenWeather API Key
     weatherApiKey = '4d5fef4ad2d54be08d1100258250402'; // WeatherAPI Key
 
+    get fieldtoFetch(){
+        return this.objectApiName === 'Account' ?
+        ['Account.BillingCity'] :
+        ['Contact.MailingCity'];
+    }
+
+    @wire(getRecord, { recordId: '$recordId', fields: '$fieldtoFetch' })
+    wiredRecord({ error, data }) {
+        if (data) {
+            if (this.objectApiName === 'Account') {
+                this.city = data.fields.BillingCity?.value || '';
+            } else if (this.objectApiName === 'Contact') {
+                this.city = data.fields.MailingCity?.value || '';
+            }
+            console.log(`City (${this.objectApiName}):`, this.city);
+        } else if (error) {
+            console.error('Error fetching city:', error);
+        }
+    }
+
     getLocation() {
-        const cityInput = this.template.querySelector('.city-input');
-        if (!cityInput || !cityInput.value.trim()) {
-            alert('Please enter a city name.');
+        if (!this.city) {
+            alert('Billing City is not available.');
             return;
         }
-
-        const cityName = cityInput.value.trim();
-        console.log('Fetching coordinates for:', cityName);
+        console.log('Fetching coordinates for:', this.city);
 
         // Fetch latitude & longitude from OpenWeather API
-        fetch(`https://api.openweathermap.org/geo/1.0/direct?q=${encodeURIComponent(cityName)}&limit=1&appid=${this.apiKey}`)
+        fetch(`https://api.openweathermap.org/geo/1.0/direct?q=${encodeURIComponent(this.city)}&limit=1&appid=${this.apiKey}`)
             .then(response => {
                 if (!response.ok) {
                     throw new Error(`OpenWeather API Error: ${response.status} - ${response.statusText}`);
@@ -37,7 +58,7 @@ export default class WeatherAPI_withoutSSC extends LightningElement {
                 console.log('Coordinates:', this.GeoLocationData);
 
                 // Fetch weather data using the correct coordinates
-                const weatherUrl = `https://api.weatherapi.com/v1/forecast.json?key=${this.weatherApiKey}&q=${latitude},${longitude}&days=2`;
+                const weatherUrl = `https://api.weatherapi.com/v1/forecast.json?key=${this.weatherApiKey}&q=${latitude},${longitude}&days=1`;
                 console.log('Fetching weather from:', weatherUrl);
 
                 return fetch(weatherUrl);
