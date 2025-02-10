@@ -1,4 +1,6 @@
 import { LightningElement, track, api, wire } from 'lwc';
+import getOpenWeatherApiKey from '@salesforce/apex/API_Configuration_Metadata_ApexClass.getOpenWeatherAPIKey';
+import getWeatherApiKey from '@salesforce/apex/API_Configuration_Metadata_ApexClass.getWeatherAPIKey';
 import {getRecord} from 'lightning/uiRecordApi';
 
 export default class WeatherAPI_withoutSSC extends LightningElement {
@@ -7,9 +9,34 @@ export default class WeatherAPI_withoutSSC extends LightningElement {
     @track city = '';
     @api recordId;
     @api objectApiName;
+    apiKey;
+    weatherApiKey;
 
-    apiKey = 'd30229392c36dda4141c8daaccba5dc1'; // OpenWeather API Key
-    weatherApiKey = '4d5fef4ad2d54be08d1100258250402'; // WeatherAPI Key
+    //apiKey = 'd30229392c36dda4141c8daaccba5dc1'; // OpenWeather API Key
+    //weatherApiKey = '4d5fef4ad2d54be08d1100258250402'; // WeatherAPI Key
+
+    connectedCallback() {
+        getOpenWeatherApiKey()
+        .then(result =>
+            {
+                this.apiKey = result;
+                console.log('OpenWeather API Key:', this.apiKey);
+            })
+        .catch(error => 
+            {
+                console.error('Error fetching OpenWeather API Key:', error);
+            });
+        getWeatherApiKey()
+        .then(result => 
+            {
+                this.weatherApiKey = result;
+                console.log('Weather API Key:', this.weatherApiKey);
+            })
+        .catch(error => 
+            {
+                console.error('Error fetching Weather API Key:', error);
+            });
+    }
 
     get fieldtoFetch(){
         return this.objectApiName === 'Account' ?
