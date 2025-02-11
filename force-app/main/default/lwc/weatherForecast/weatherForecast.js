@@ -20,9 +20,9 @@ export default class WeatherForecast extends LightningElement {
         }
     }
 
-    fetchWeather() {
+    connectedCallback() {
         console.log('Fetching weather for recordId:', this.recordId);
-        console.log('Object Type:', this.objectApiName); // ✅ This should log 'Account' or 'Contact'
+        console.log('Object Type:', this.objectApiName); // ✅ This should log 'Account' or 'Contact'('Object Type:', this.objectApiName); // ✅ This should log 'Account' or 'Contact'
 
         if (!this.recordId || !this.objectApiName) {
             console.error(' Missing recordId or objectApiName.');

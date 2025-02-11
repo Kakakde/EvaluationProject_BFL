@@ -2,7 +2,7 @@
     <lightning-card class ="weather-container" title="Weather Forecast">
         <div class="slds-m-around_medium">
             <!-- Button to Fetch Weather -->
-            <lightning-button 
+            <!-- <lightning-button 
                 label="Get Weather Forecast" 
                 variant="brand" 
                 onclick={fetchWeather} 
@@ -13,7 +13,7 @@
                 variant="Destructive" 
                 onclick={clearWeather} 
                 class="slds-m-top_medium slds-m-left_medium"></lightning-button>
-            <!-- Show Loading Indicator if Data is Loading -->
+            Show Loading Indicator if Data is Loading -->
             <template if:true={isLoading}>
                 <lightning-spinner size="large" alternative-text="Loading..."></lightning-spinner>
             </template>
